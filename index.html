@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" data-style="dark-panel">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="A private, styleable GPS motorcycle speedometer.">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Dashstyle">
+    <title>Dashstyle — GPS speedometer</title>
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./icon.svg">
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <main class="dashboard" id="dashboard" aria-label="GPS speedometer">
+      <section class="speedometer" aria-label="Speed">
+        <div class="digital-display" id="digital-display" hidden>
+          <span class="speed-number" id="speed-value">---</span>
+          <span class="speed-unit">km/h</span>
+        </div>
+        <div class="analog-display" id="analog-display" aria-hidden="true" hidden>
+          <svg class="dial" viewBox="0 0 320 320" role="presentation">
+            <circle class="dial-bezel" cx="160" cy="160" r="153"/>
+            <circle class="dial-face" cx="160" cy="160" r="140"/>
+            <g id="dial-ticks"></g>
+            <circle class="dial-inner-ring" cx="160" cy="160" r="89"/>
+            <g id="dial-inner-ticks"></g>
+            <circle class="dial-inner-center" cx="160" cy="160" r="54"/>
+            <path class="dial-screen" d="M112 103 Q160 86 208 103 L219 205 Q160 221 101 205Z"/>
+            <text class="dial-unit dial-unit-inner" x="160" y="123">km/h</text>
+            <text class="dial-unit dial-unit-bottom" x="160" y="244">km/h</text>
+            <g id="dial-labels"></g>
+            <text class="dial-speed" id="dial-speed" x="160" y="141">---</text>
+            <path class="needle" id="needle" d="M160 160 157 45 160 38 163 45Z"/>
+            <circle class="needle-hub-outer" cx="160" cy="160" r="10"/>
+            <circle class="needle-hub-inner" cx="160" cy="160" r="5"/>
+          </svg>
+        </div>
+        <span class="sr-only" id="screen-reader-speed" aria-live="polite"></span>
+        <span class="sr-only" id="gps-status" role="status" aria-live="polite">GPS ready</span>
+      </section>
+
+      <div class="bottom-controls">
+        <button class="start-button" id="start-button" type="button" aria-label="Start GPS">
+          <svg class="start-icon play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7z"/></svg>
+          <svg class="stop-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5z"/></svg>
+        </button>
+        <button class="settings-button" id="settings-button" type="button" aria-label="Open dashboard settings" aria-haspopup="dialog" aria-controls="settings-dialog">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1.9-1.5 2.6-1.4-.5a7.8 7.8 0 0 1-1.5.9l-.2 1.5h-3l-.3-1.5a7.8 7.8 0 0 1-1.5-.9l-1.4.5-1.5-2.6 1.1-.9a7.7 7.7 0 0 1 0-1.8l-1.1-.9 1.5-2.6 1.4.5a7.8 7.8 0 0 1 1.5-.9l.3-1.5h3l.2 1.5a7.8 7.8 0 0 1 1.5.9l1.4-.5 1.5 2.6-1.1.9a7.7 7.7 0 0 1 0 1.8Z" transform="translate(-1.5 -1)"/></svg>
+        </button>
+      </div>
+
+      <dialog class="settings-dialog" id="settings-dialog" aria-labelledby="settings-title">
+        <div class="settings-heading">
+          <h1 id="settings-title">Settings</h1>
+          <button class="settings-close" id="settings-close" type="button" aria-label="Close settings">×</button>
+        </div>
+        <label class="settings-field" for="style-select">
+          <span>Dashboard style</span>
+          <select id="style-select"></select>
+        </label>
+        <fieldset class="settings-field unit-field">
+          <legend>Speed unit</legend>
+          <div class="unit-toggle">
+            <label>
+              <input type="radio" name="speed-unit" value="kmh" checked>
+              <span>km/h</span>
+            </label>
+            <label>
+              <input type="radio" name="speed-unit" value="mph">
+              <span>mph</span>
+            </label>
+          </div>
+        </fieldset>
+        <label class="settings-field" for="speed-scale-input">
+          <span>Speed scale</span>
+          <span class="speed-scale-control">
+            <input id="speed-scale-input" type="number" min="100" max="320" step="10" inputmode="numeric" enterkeyhint="done" autocomplete="off">
+            <span id="speed-scale-unit" aria-hidden="true">km/h</span>
+          </span>
+        </label>
+      </dialog>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,135 @@
+:root {
+  color-scheme: dark;
+  font-family: var(--font, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --bg: #000000;
+  --surface: #080808;
+  --foreground: #f3f3f3;
+  --muted: #747474;
+  --accent: #ef302b;
+  --line: #292929;
+  --settings-surface: #111314;
+  --settings-field-bg: #080909;
+  --settings-foreground: #f3f3f3;
+  --settings-muted: #a3a8aa;
+  --settings-line: #373c40;
+  --settings-accent: #ef302b;
+  --glow-color: #ef302b;
+  --parallax-x: 0px;
+  --parallax-y: 0px;
+  --reflection-x: 0px;
+  --reflection-y: 0px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; min-width: 280px; min-height: 100%; margin: 0; overflow: hidden; background: var(--bg); color: var(--foreground); }
+button { color: inherit; font: inherit; }
+.dashboard { position: relative; width: 100%; height: 100%; height: 100dvh; overflow: hidden; background: var(--bg); isolation: isolate; }
+.dashboard::before, .dashboard::after { position: absolute; z-index: 2; inset: -8%; content: ""; pointer-events: none; }
+.dashboard::before { background: radial-gradient(ellipse at 50% 48%, color-mix(in srgb, var(--glow-color) 9%, transparent), transparent 48%), radial-gradient(ellipse at 50% 48%, color-mix(in srgb, var(--foreground) 3%, transparent), transparent 62%); mix-blend-mode: screen; opacity: .8; transform: translate3d(var(--reflection-x), var(--reflection-y), 0); }
+.dashboard::after { background: radial-gradient(ellipse 42% 18% at 19% 9%, rgba(255, 255, 255, .075), transparent 78%), linear-gradient(116deg, transparent 22%, rgba(255, 255, 255, .025) 22.2%, transparent 22.6%), linear-gradient(72deg, transparent 63%, rgba(255, 255, 255, .018) 63.15%, transparent 63.35%), repeating-linear-gradient(12deg, transparent 0 96px, rgba(255, 255, 255, .012) 97px, transparent 98px 151px); filter: blur(1.2px); mix-blend-mode: screen; opacity: .32; transform: translate3d(var(--reflection-x), var(--reflection-y), 0); }
+.speedometer { position: absolute; inset: 0 0 124px; display: grid; place-items: center; transform: translate3d(var(--parallax-x), var(--parallax-y), 0); transition: transform .22s ease-out; will-change: transform; }
+.digital-display, .analog-display { display: none; }
+.digital-display:not([hidden]) { display: flex; }
+.analog-display:not([hidden]) { display: block; width: min(94vw, calc(100dvh - 150px), 680px); aspect-ratio: 1; }
+.digital-display { align-items: baseline; justify-content: center; gap: .08em; }
+.speed-number { color: var(--foreground); font-family: var(--font); font-size: clamp(112px, 38vmin, 340px); font-variant-numeric: tabular-nums; font-weight: 700; line-height: .86; letter-spacing: -.08em; text-shadow: 0 0 16px color-mix(in srgb, var(--glow-color) 34%, transparent); }
+.speed-unit { color: var(--muted); font-family: var(--font); font-size: clamp(16px, 4vmin, 34px); font-weight: 600; }
+.dial { width: 100%; height: 100%; overflow: visible; }
+.dial-track { fill: none; stroke: var(--line); stroke-width: 1.3; }
+.dial-tick { fill: none; stroke: var(--tick-color, var(--foreground)); stroke-linecap: square; stroke-width: 1.2; opacity: .86; filter: drop-shadow(0 0 2px color-mix(in srgb, var(--tick-color, var(--foreground)) 42%, transparent)); }
+.dial-tick.major { stroke-width: var(--major-tick-width, 2.7); opacity: .98; }
+.dial-number { fill: var(--foreground); stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; paint-order: stroke fill; font-family: var(--font); font-size: 14px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; filter: drop-shadow(0 0 3px color-mix(in srgb, var(--foreground) 35%, transparent)); }
+.dial-bezel, .dial-face, .dial-inner-ring, .dial-inner-center, .dial-screen, .dial-inner-tick, .dial-speed { display: none; }
+.dial-unit { fill: var(--foreground); font-family: var(--font); font-size: 10px; font-weight: 700; text-anchor: middle; filter: drop-shadow(0 0 3px color-mix(in srgb, var(--glow-color) 45%, transparent)); }
+.dial-unit-bottom { display: none; }
+.dial-speed { fill: var(--foreground); font-family: var(--font); font-size: 26px; font-weight: 700; text-anchor: middle; filter: drop-shadow(0 0 5px color-mix(in srgb, var(--glow-color) 52%, transparent)); }
+.dial-inner-tick { filter: drop-shadow(0 0 2px color-mix(in srgb, var(--foreground) 38%, transparent)); }
+.needle { fill: var(--accent); transform-origin: 160px 160px; transition: transform .2s ease-out; filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent) 68%, transparent)); }
+.needle.is-sweeping { animation: needle-sweep .85s ease-in-out; }
+@keyframes needle-sweep {
+  0%, 100% { transform: rotate(-135deg); }
+  50% { transform: rotate(135deg); }
+}
+.needle-hub-outer { fill: var(--accent); filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent) 58%, transparent)); }
+.needle-hub-inner { fill: var(--bg); }
+html[data-style="bubbly"] .dial-bezel { display: block; fill: #252727; stroke: #aeb1af; stroke-width: 8; }
+html[data-style="bubbly"] .dial-face { display: block; fill: var(--surface); stroke: #f0f1ee; stroke-width: 5; }
+html[data-style="bubbly"] .dial-track { display: none; }
+html[data-style="bubbly"] .dial-tick { stroke: #292c2d; opacity: .8; }
+html[data-style="bubbly"] .dial-number { font-size: 18px; }
+html[data-style="bubbly"] .dial-number { stroke: var(--surface); }
+html[data-style="bubbly"] .dial-inner-ring { display: block; fill: #292c2d; stroke: #5a5d5e; stroke-width: 2; }
+html[data-style="bubbly"] .dial-inner-tick { display: block; fill: none; stroke: #e1e3e1; stroke-width: 1.4; }
+html[data-style="bubbly"] .dial-inner-tick.major { stroke-width: 2.5; }
+html[data-style="bubbly"] .dial-inner-center { display: block; fill: var(--surface); }
+html[data-style="bubbly"] .dial-unit-inner { fill: var(--foreground); }
+html[data-style="stateside"] .dial-bezel { display: block; fill: #111313; stroke: #aeb4b7; stroke-width: 7; }
+html[data-style="stateside"] .dial-face { display: block; fill: #050708; stroke: #f1f2f2; stroke-width: 5; }
+html[data-style="stateside"] .dial-tick { stroke: #282b2d; stroke-width: 1.5; opacity: .95; }
+html[data-style="stateside"] .dial-tick.major { stroke-width: 3.4; }
+html[data-style="stateside"] .dial-number { font-size: 15px; font-style: italic; }
+html[data-style="stateside"] .dial-number { stroke: #050708; }
+html[data-center-speed="true"] .dial-screen { display: block; fill: var(--surface); stroke: #252b30; stroke-width: 2; }
+html[data-center-speed="true"] .dial-speed { display: block; font-size: 31px; }
+html[data-style="stateside"] .dial-unit-inner { display: none; }
+html[data-style="stateside"] .dial-unit-bottom { display: block; }
+html[data-style="stateside"] .needle { fill: #f4f5f5; }
+html[data-style="stateside"] .needle-hub-outer { fill: #101314; }
+html[data-style="stateside"] .needle-hub-inner { fill: #dfe2e3; }
+html[data-style="falcon"] .dial-tick { stroke-width: 2.2; }
+html[data-style="falcon"] .dial-tick.major { stroke-width: 4; }
+html[data-style="falcon"] .dial-number { font-size: 12px; }
+html[data-style="falcon"] .dial-number { fill: var(--number-color, var(--foreground)); }
+html[data-style="falcon"] .dial-number { stroke: #10100e; }
+html[data-style="falcon"] .needle-hub-outer { fill: #38342c; stroke: #a7a49a; stroke-width: 2; }
+html[data-style="falcon"] .needle-hub-inner { fill: #ef7c83; }
+.bottom-controls { position: absolute; z-index: 3; bottom: max(16px, env(safe-area-inset-bottom)); left: 50%; display: flex; align-items: center; gap: 10px; transform: translateX(-50%); }
+.start-button, .settings-button { display: grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--accent); -webkit-tap-highlight-color: transparent; cursor: pointer; transition: border-color .15s, background .15s, color .15s, transform .15s; }
+.start-button { width: 48px; height: 48px; }
+.settings-button { width: 36px; height: 36px; color: var(--muted); }
+.start-button:hover, .settings-button:hover { border-color: var(--accent); }
+.start-button:active, .settings-button:active { transform: scale(.96); }
+.start-button.is-active { border-color: var(--accent); background: var(--accent); color: var(--bg); }
+.start-icon { width: 22px; height: 22px; fill: currentColor; }
+.stop-icon { display: none; width: 16px; height: 16px; fill: currentColor; }
+.start-button.is-active .play-icon { display: none; }
+.start-button.is-active .stop-icon { display: block; }
+.settings-button svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
+.settings-dialog { width: min(340px, calc(100vw - 36px)); max-width: none; max-height: calc(100dvh - 36px); overflow-y: auto; padding: 20px; border: 1px solid var(--settings-line); border-radius: 15px; background: var(--surface); color: var(--foreground); box-shadow: 0 18px 70px #0009; }
+.settings-dialog::backdrop { background: #000a; backdrop-filter: blur(5px); }
+.settings-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.settings-heading h1 { margin: 0; font-size: 19px; font-weight: 650; letter-spacing: -.03em; }
+.settings-close { width: 32px; height: 32px; display: grid; place-items: center; padding: 0; border: 1px solid var(--settings-line); border-radius: 50%; background: transparent; color: var(--settings-muted); font-size: 22px; line-height: 1; cursor: pointer; }
+.settings-field { display: grid; gap: 8px; margin-top: 14px; color: var(--settings-muted); font-size: 12px; }
+.unit-field { min-width: 0; padding: 0; border: 0; }
+.unit-field legend { padding: 0; }
+.settings-field select, .settings-field input[type="number"] { width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid var(--settings-line); border-radius: 8px; background: var(--settings-field-bg); color: var(--settings-foreground); font: inherit; font-size: 16px; }
+.settings-field input[type="number"] { appearance: auto; }
+.unit-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 3px; border: 1px solid var(--settings-line); border-radius: 10px; background: var(--settings-field-bg); }
+.unit-toggle label { position: relative; }
+.unit-toggle input { position: absolute; width: 1px; height: 1px; margin: 0; padding: 0; opacity: 0; }
+.unit-toggle label span { display: block; padding: 10px; border-radius: 7px; color: var(--settings-muted); text-align: center; cursor: pointer; }
+.unit-toggle input:checked + span { background: var(--settings-accent); color: #101112; }
+.unit-toggle input:focus-visible + span { outline: 2px solid var(--settings-foreground); outline-offset: 2px; }
+.speed-scale-control { display: flex; align-items: center; gap: 10px; }
+.speed-scale-control > span { color: var(--settings-muted); font-size: 14px; }
+.settings-dialog { color-scheme: dark; color: var(--settings-foreground); background: var(--settings-surface); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.settings-dialog button:focus-visible { outline-color: var(--settings-accent); }
+.start-button, .settings-button { box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 18%, transparent); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+@media (max-height: 430px) {
+  .speedometer { inset: 0 0 112px; }
+  .bottom-controls { bottom: max(10px, env(safe-area-inset-bottom)); gap: 8px; }
+  .start-button { width: 42px; height: 42px; }
+  .settings-button { width: 32px; height: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; }
+  .needle.is-sweeping { animation-duration: .01ms; }
+  .speedometer { transform: none; will-change: auto; }
+  .dashboard::before, .dashboard::after { transform: none; }
+}
